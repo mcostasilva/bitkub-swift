@@ -9,7 +9,7 @@ import Foundation
 import Combine
 import CryptoKit
 
-class BitkubController: ObservableObject {
+public class BitkubController: ObservableObject {
 
 	@Published public private(set) var coins: [Coin] = []
 	@Published public private(set) var balance: [Balance] = []
