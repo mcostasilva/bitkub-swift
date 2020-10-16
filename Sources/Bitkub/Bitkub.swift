@@ -1,3 +1,3 @@
-struct Bitkub {
-    var text = "Hello, World!"
+public struct Bitkub {
+    public var text = "Hello, World!"
 }
