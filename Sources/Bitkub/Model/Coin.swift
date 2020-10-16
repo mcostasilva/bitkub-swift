@@ -7,21 +7,21 @@
 
 import Foundation
 
-struct Coin: Decodable, Identifiable {
-	var name: String {
+public struct Coin: Decodable, Identifiable {
+	public var name: String {
 		self.symbol?.name ?? CoinSymbol.UNKNOWN.rawValue
 	}
-	let id: Int
-	let symbol: CoinSymbol?
-	let last: Double
-	let percentChange: Double
-	var favorite: Bool = false
-	var lowestAsk: Double = 0
-	var highestBid: Double = 0
-	var high24hr: Double = 0
-	var low24hr: Double = 0
+	public let id: Int
+	public let symbol: CoinSymbol?
+	public let last: Double
+	public let percentChange: Double
+	public var favorite: Bool = false
+	public var lowestAsk: Double = 0
+	public var highestBid: Double = 0
+	public var high24hr: Double = 0
+	public var low24hr: Double = 0
 
-	var imageName: String {
+	public var imageName: String {
 		guard let symbol = self.symbol?.rawValue else {
 			return ""
 		}
@@ -38,7 +38,7 @@ struct Coin: Decodable, Identifiable {
 		case high24hr
 	}
 
-	init(from decoder: Decoder) throws {
+	public init(from decoder: Decoder) throws {
 		let container = try decoder.container(keyedBy: CodingKeys.self)
 
 		id = try container.decode(Int.self, forKey: CodingKeys.id)
@@ -52,7 +52,7 @@ struct Coin: Decodable, Identifiable {
 	}
 
 
-	init(id: Int, symbol: CoinSymbol, last: Double, percentChange: Double = 0, favorite: Bool = false) {
+	public init(id: Int, symbol: CoinSymbol, last: Double, percentChange: Double = 0, favorite: Bool = false) {
 		self.id = id
 		self.symbol = symbol
 		self.last = last
@@ -60,7 +60,7 @@ struct Coin: Decodable, Identifiable {
 		self.favorite = favorite
 	}
 
-	mutating func refreshFavorite() {
+	public mutating func refreshFavorite() {
 //		favorite = PreferencesManager.favorites().contains(id)
 	}
 }
