@@ -15,7 +15,7 @@ struct Coin: Decodable, Identifiable {
 	let symbol: CoinSymbol?
 	let last: Double
 	let percentChange: Double
-	var favorite: Bool
+	var favorite: Bool = false
 	var lowestAsk: Double = 0
 	var highestBid: Double = 0
 	var high24hr: Double = 0
