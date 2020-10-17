@@ -78,11 +78,8 @@ public class BitkubController: ObservableObject {
 		request.httpMethod = "POST"
 		let now = Int(Date().timeIntervalSince1970)
 		let preQuery = ["ts": now]
-		let preQueryData = try! JSONEncoder().encode(preQuery)
-		let signatureData = HMAC<SHA256>.authenticationCode(for: preQueryData, using: SymmetricKey(data: secret.data(using: .utf8)!))
-		let signature = String(describing: signatureData).replacingOccurrences(of: "HMAC with SHA256: ", with: "")
+		let signature = sign(preQuery)
 		let query: [String: Any] = ["ts": now, "sig": signature]
-		print(query)
 		let data = try! JSONSerialization.data(withJSONObject: query, options: .fragmentsAllowed)
 		request.httpBody = data
 		URLSession.shared
@@ -109,6 +106,13 @@ public class BitkubController: ObservableObject {
 				callback?(normalizedString)
 			}
 			.store(in: &cancellables)
+	}
+
+	private func sign<T: Codable>(_ query: [String: T]) -> String {
+		let preQueryData = try! JSONEncoder().encode(query)
+		let signatureData = HMAC<SHA256>.authenticationCode(for: preQueryData, using: SymmetricKey(data: secret!.data(using: .utf8)!))
+		let signature = String(describing: signatureData).replacingOccurrences(of: "HMAC with SHA256: ", with: "")
+		return signature
 	}
 
 	func value(for symbol: CoinSymbol) -> Double {
