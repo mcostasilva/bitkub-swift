@@ -21,14 +21,21 @@ final class BitkubTests: XCTestCase {
 		let secret = ProcessInfo.processInfo.environment["SECRET"]
 		XCTAssertNotNil(key)
 		XCTAssertNotNil(secret)
-		let controller = BitkubController()
+		let controller = BitkubController(apiKey: key!, secret: secret!)
 		let expectation = XCTestExpectation(description: "Balance retrieved from Bitkub")
-		controller.loadBalance(key: key!, secret: secret!)
+		try! controller.loadBalance()
 		controller.$balances.drop(while: {$0.count == 0}).sink { (balances) in
 			expectation.fulfill()
 		}
 		.store(in: &cancellables)
 		wait(for: [expectation], timeout: 5)
+	}
+
+	func testLoadBalanceThrowsWithoutCredentials() {
+		let controller = BitkubController()
+		XCTAssertThrowsError(try controller.loadBalance()) { error in
+			XCTAssertEqual(error as! BitkubError, BitkubError.missingCredentials)
+		}
 	}
 
     static var allTests = [

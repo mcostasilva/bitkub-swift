@@ -15,10 +15,23 @@ public class BitkubController: ObservableObject {
 	@Published public private(set) var balances: [Balance] = []
 	@Published public private(set) var normalizedBalance: Double?
 	@Published public private(set) var normalizedBalanceString: String?
+	@Published public var apiKey: String?
+	@Published public var secret: String?
 
 	private var cancellables: Set<AnyCancellable> = Set<AnyCancellable>()
 
 	public init() { }
+
+	/// Initialize controller with a secret and passeord
+	/// - Parameters:
+	///   - apiKey: User's API KEY
+	///   - secret: User's secret
+	/// - Note:
+	/// `apiKey` and `secret` are only used on API calls that require them.
+	public init(apiKey: String, secret: String) {
+		self.secret = secret
+		self.apiKey = apiKey
+	}
 
 	/// Pull latest exchange rates from Bitkub and stores them into `self.coins`
 	public func loadCoins() {
@@ -52,11 +65,13 @@ public class BitkubController: ObservableObject {
 
 	/// Load balances from Bitkub and stores it into `self.balances`
 	/// - Parameters:
-	///   - key: Bitkub `API KEY`
-	///   - secret: Bitkub `SECRET`
 	///   - callback: Optional closure called with a normalized string representing the current balance total amount in THB
-	public func loadBalance(key: String, secret: String, callback: ((String) -> Void)? = nil) {
-		guard key != "", secret != "" else { return }
+	///	- Throws: `BitkubError.missingCredentials` if `apikey` or `secret` are empty
+
+	public func loadBalance(callback: ((String) -> Void)? = nil) throws {
+		guard let key = apiKey, key != "", let secret = secret, secret != "" else {
+			throw BitkubError.missingCredentials
+		}
 
 		var request = URLRequest(url: URL(string: "https://api.bitkub.com/api/market/balances")!)
 		request.allHTTPHeaderFields = ["Content-Type": "application/json", "Accept": "application/json", "X-BTK-APIKEY": key]
@@ -99,6 +114,10 @@ public class BitkubController: ObservableObject {
 	func value(for symbol: CoinSymbol) -> Double {
 		coins.first(where: { $0.symbol == symbol})?.last ?? 1
 	}
+}
+
+enum BitkubError: Error {
+	case missingCredentials
 }
 
 let notif = Notification.Name(rawValue: "FavoritesUpdated")
