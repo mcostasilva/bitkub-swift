@@ -12,7 +12,7 @@ import CryptoKit
 public class BitkubController: ObservableObject {
 
 	@Published public private(set) var coins: [Coin] = []
-	@Published public private(set) var balance: [Balance] = []
+	@Published public private(set) var balances: [Balance] = []
 	@Published public private(set) var normalizedBalance: Double?
 	@Published public private(set) var normalizedBalanceString: String?
 
@@ -20,6 +20,7 @@ public class BitkubController: ObservableObject {
 
 	public init() { }
 
+	/// Pull latest exchange rates from Bitkub and stores them into `self.coins`
 	public func loadCoins() {
 		URLSession.shared
 		.dataTaskPublisher(for: URL(string: "https://api.bitkub.com/api/market/ticker")!)
@@ -49,6 +50,11 @@ public class BitkubController: ObservableObject {
 			.store(in: &cancellables)
 	}
 
+	/// Load balances from Bitkub and stores it into `self.balances`
+	/// - Parameters:
+	///   - key: Bitkub `API KEY`
+	///   - secret: Bitkub `SECRET`
+	///   - callback: Optional closure called with a normalized string representing the current balance total amount in THB
 	public func loadBalance(key: String, secret: String, callback: ((String) -> Void)? = nil) {
 		guard key != "", secret != "" else { return }
 
@@ -77,8 +83,8 @@ public class BitkubController: ObservableObject {
 					print("Balance recovered")
 				}
 			} receiveValue: { (balances) in
-				self.balance = balances.result.array.filter({ $0.available + $0.reserved > 0})
-				self.normalizedBalance = self.balance.reduce(0) { (acc, bal) -> Double in
+				self.balances = balances.result.array.filter({ $0.available + $0.reserved > 0})
+				self.normalizedBalance = self.balances.reduce(0) { (acc, bal) -> Double in
 					acc + self.value(for: bal.currency) * (bal.available + bal.reserved)
 				}
 				let currencyFormatter = NumberFormatter()
