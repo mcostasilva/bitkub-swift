@@ -3,3 +3,6 @@
 /Packages
 /*.xcodeproj
 xcuserdata/
+
+# We don't want to track private API KEY and SECRET used for testing purposes.
+.swiftpm/xcode/xcshareddata/
