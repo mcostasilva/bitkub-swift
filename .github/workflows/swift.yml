@@ -19,4 +19,4 @@ jobs:
       env:
         KEY: ${{ secrets.KEY}} 
         SECRET: ${{ secrets.SECRET }}
-      run: swift test -v
+      run: swift test
