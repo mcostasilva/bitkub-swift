@@ -9,14 +9,11 @@ final class BitkubTests: XCTestCase {
 		let expectation = XCTestExpectation(description: "Coin values recovered from Bitkub")
 		let controller = BitkubController()
 		controller.loadCoins()
-		controller.$coins.sink { (coins) in
-			if coins.count > 0 {
-				expectation.fulfill()
-			}
+		controller.$coins.drop(while: { $0.count == 0 }).sink { (coins) in
+			expectation.fulfill()
 		}
 		.store(in: &cancellables)
 		wait(for: [expectation], timeout: 5)
-		XCTAssertNotEqual(controller.coins.count, 0)
 	}
 
     static var allTests = [
