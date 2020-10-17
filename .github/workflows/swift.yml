@@ -1,5 +1,4 @@
 name: Testing
-
 on:
   push:
     branches: [ master ]
@@ -17,4 +16,7 @@ jobs:
     - name: Build
       run: swift build -v
     - name: Run tests
+      env:
+        KEY: ${{ secrets.KEY}} 
+        SECRET: ${{ secrets.SECRET }}
       run: swift test -v
