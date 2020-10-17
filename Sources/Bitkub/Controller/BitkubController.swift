@@ -22,13 +22,24 @@ public class BitkubController: ObservableObject {
 
 	public init() { }
 
-	/// Initialize controller with a secret and passeord
+	/// Initialize controller with a secret and password
 	/// - Parameters:
 	///   - apiKey: User's API KEY
 	///   - secret: User's secret
 	/// - Note:
 	/// `apiKey` and `secret` are only used on API calls that require them.
 	public init(apiKey: String, secret: String) {
+		self.secret = secret
+		self.apiKey = apiKey
+	}
+
+	/// Set controller with a secret and password
+	/// - Parameters:
+	///   - apiKey: User's API KEY
+	///   - secret: User's secret
+	/// - Note:
+	/// `apiKey` and `secret` are only used on API calls that require them.
+	public set(apiKey: String, secret: String) {
 		self.secret = secret
 		self.apiKey = apiKey
 	}
