@@ -18,7 +18,7 @@ public class BitkubController: ObservableObject {
 
 	private var cancellables: Set<AnyCancellable> = Set<AnyCancellable>()
 
-	public init() {
+	public func loadCoins() {
 		URLSession.shared
 		.dataTaskPublisher(for: URL(string: "https://api.bitkub.com/api/market/ticker")!)
 		.map { $0.data }

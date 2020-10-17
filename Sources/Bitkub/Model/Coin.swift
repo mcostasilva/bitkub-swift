@@ -8,17 +8,30 @@
 import Foundation
 
 public struct Coin: Decodable, Identifiable {
+
+	/// Coin name in English
 	public var name: String {
 		self.symbol?.name ?? CoinSymbol.UNKNOWN.rawValue
 	}
+
+	/// Integer ID for this Coin on Bitkub
 	public let id: Int
+
+	/// CoinSymbol representing a coin
 	public let symbol: CoinSymbol?
+
+	/// Last traiding value
 	public let last: Double
+
 	public let percentChange: Double
 	public var favorite: Bool = false
 	public var lowestAsk: Double = 0
 	public var highestBid: Double = 0
+
+	/// Highest value in the last 24h
 	public var high24hr: Double = 0
+
+	/// Lowest value in the last 24h
 	public var low24hr: Double = 0
 
 	public var imageName: String {
