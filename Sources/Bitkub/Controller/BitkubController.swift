@@ -17,6 +17,7 @@ public class BitkubController: ObservableObject {
 	@Published public private(set) var normalizedBalanceString: String?
 	@Published public var apiKey: String?
 	@Published public var secret: String?
+	@Published public private(set) var loading: Bool = false
 
 	private var cancellables: Set<AnyCancellable> = Set<AnyCancellable>()
 
@@ -39,19 +40,21 @@ public class BitkubController: ObservableObject {
 	///   - secret: User's secret
 	/// - Note:
 	/// `apiKey` and `secret` are only used on API calls that require them.
-	public set(apiKey: String, secret: String) {
+	public func set(apiKey: String, secret: String) {
 		self.secret = secret
 		self.apiKey = apiKey
 	}
 
 	/// Pull latest exchange rates from Bitkub and stores them into `self.coins`
 	public func loadCoins() {
+		self.loading = true
 		URLSession.shared
 		.dataTaskPublisher(for: URL(string: "https://api.bitkub.com/api/market/ticker")!)
 		.map { $0.data }
 		.decode(type: ResultDictionary<Coin>.self, decoder: JSONDecoder())
 		.receive(on: DispatchQueue.main)
 		.sink(receiveCompletion: { (completion) in
+			self.loading = false
 			switch completion {
 			case .failure(let error):
 				print(error.localizedDescription)
