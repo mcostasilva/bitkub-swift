@@ -18,6 +18,7 @@ public class BitkubController: ObservableObject {
 	@Published public var apiKey: String?
 	@Published public var secret: String?
 	@Published public private(set) var loading: Bool = false
+	@Published public private(set) var refreshDate: Date?
 
 	private var cancellables: Set<AnyCancellable> = Set<AnyCancellable>()
 
@@ -63,6 +64,7 @@ public class BitkubController: ObservableObject {
 			}
 		}, receiveValue: { (coins) in
 			self.coins = coins.array.sorted(by: {$0.id < $1.id })
+			self.refreshDate = Date()
 		})
 		.store(in: &cancellables)
 
