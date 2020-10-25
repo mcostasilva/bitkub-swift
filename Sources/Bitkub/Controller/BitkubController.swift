@@ -49,8 +49,10 @@ public class BitkubController: ObservableObject {
 	/// Pull latest exchange rates from Bitkub and stores them into `self.coins`
 	public func loadCoins() {
 		self.loading = true
+		let url = URL(string: "https://api.bitkub.com/api/market/ticker")!
+		let request = URLRequest(url: url, cachePolicy: .reloadRevalidatingCacheData)
 		URLSession.shared
-		.dataTaskPublisher(for: URL(string: "https://api.bitkub.com/api/market/ticker")!)
+		.dataTaskPublisher(for: request)
 		.map { $0.data }
 		.decode(type: ResultDictionary<Coin>.self, decoder: JSONDecoder())
 		.receive(on: DispatchQueue.main)
