@@ -31,6 +31,20 @@ final class BitkubTests: XCTestCase {
 		wait(for: [expectation], timeout: 5)
 	}
 
+	func testWrongCredentials() {
+		let key = "abcd"
+		let secret = "efgh"
+		let controller = BitkubController(apiKey: key, secret: secret)
+		let expectation = XCTestExpectation(description: "Credentials are marked as invalid")
+		try! controller.loadBalance()
+		controller.$validCredentials.drop(while: { $0 }).sink { (validCredentials) in
+			if validCredentials == false {
+				expectation.fulfill()
+			}
+		}.store(in: &cancellables)
+		wait(for: [expectation], timeout: 5)
+	}
+
 	func testLoadBalanceThrowsWithoutCredentials() {
 		let controller = BitkubController()
 		XCTAssertThrowsError(try controller.loadBalance()) { error in

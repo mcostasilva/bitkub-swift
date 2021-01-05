@@ -19,6 +19,7 @@ public class BitkubController: ObservableObject {
 	@Published public var secret: String?
 	@Published public private(set) var loading: Bool = false
 	@Published public private(set) var refreshDate: Date?
+	@Published public private(set) var validCredentials: Bool = true
 
 	private var cancellables: Set<AnyCancellable> = Set<AnyCancellable>()
 
@@ -109,6 +110,10 @@ public class BitkubController: ObservableObject {
 				switch completion {
 				case .failure(let error):
 					print(error.localizedDescription)
+					// Bitkub returns a 200 even when credentials are invalid.
+					// If there was an error decoding the json
+					// we assume it's because of wrong credentials
+					self.validCredentials = false
 				case .finished:
 					print("Balance recovered")
 				}
@@ -140,6 +145,7 @@ public class BitkubController: ObservableObject {
 
 enum BitkubError: Error {
 	case missingCredentials
+	case invalidCredentials
 }
 
 let notif = Notification.Name(rawValue: "FavoritesUpdated")
