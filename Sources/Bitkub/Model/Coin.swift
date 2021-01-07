@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct Coin: Decodable, Identifiable {
+public struct Coin: Codable, Identifiable {
 
 	/// Coin name in English
 	public var name: String {
