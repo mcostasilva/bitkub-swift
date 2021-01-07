@@ -96,4 +96,8 @@ public enum CoinSymbol: String, Codable {
 			return "Unknown"
 		}
 	}
+
+	enum CodingKeys: String, CodingKey {
+		case name
+	}
 }
