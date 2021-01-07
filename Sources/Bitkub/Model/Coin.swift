@@ -57,7 +57,7 @@ public struct Coin: Codable, Identifiable {
 		id = try container.decode(Int.self, forKey: CodingKeys.id)
 		last = try container.decode(Double.self, forKey: CodingKeys.last)
 		percentChange = try container.decode(Double.self, forKey: CodingKeys.percentChange)
-		symbol = CoinSymbol(rawValue: container.codingPath.first!.stringValue) ?? try? container.decode(CoinSymbol.Type, forKey: CodingKeys.symbol)
+		symbol = (try? container.decode(CoinSymbol.self, forKey: CodingKeys.symbol)) ?? CoinSymbol(rawValue: container.codingPath.first!.stringValue) 
 		lowestAsk = try container.decode(Double.self, forKey: CodingKeys.lowestAsk)
 		highestBid = try container.decode(Double.self, forKey: CodingKeys.highestBid)
 //		favorite = PreferencesManager.favorites().contains(id)
