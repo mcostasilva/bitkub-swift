@@ -20,6 +20,7 @@ public class BitkubController: ObservableObject {
 	@Published public private(set) var loading: Bool = false
 	@Published public private(set) var refreshDate: Date?
 	@Published public private(set) var validCredentials: Bool = true
+	private let cacheController: CacheController = CacheController()
 
 	private var cancellables: Set<AnyCancellable> = Set<AnyCancellable>()
 
@@ -50,6 +51,7 @@ public class BitkubController: ObservableObject {
 	/// Pull latest exchange rates from Bitkub and stores them into `self.coins`
 	public func loadCoins() {
 		self.loading = true
+		self.coins = cacheController.recover()
 		let url = URL(string: "https://api.bitkub.com/api/market/ticker")!
 		let request = URLRequest(url: url, cachePolicy: .reloadRevalidatingCacheData)
 		URLSession.shared
@@ -67,6 +69,7 @@ public class BitkubController: ObservableObject {
 			}
 		}, receiveValue: { (coins) in
 			self.coins = coins.array.sorted(by: {$0.id < $1.id })
+			self.cacheController.save(self.coins)
 			self.refreshDate = Date()
 		})
 		.store(in: &cancellables)
